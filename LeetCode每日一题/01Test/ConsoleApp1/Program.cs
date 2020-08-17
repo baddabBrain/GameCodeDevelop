@@ -11,58 +11,48 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
 
-            string s = "[{]}";
+            string s = "hello";
 
-            Console.WriteLine(IsValid(s));
+            char[] nums = s.ToCharArray();
+
+
+            string a = ReverseVowels(s);
+
+        
             Console.ReadKey();
         }
 
 
-        //将字符串中的左括号入栈，碰到与之相对应的右括号则出栈
-        //不是将所有的左括号都入栈之后，再进行相应的出栈操作
-        //而是入一个出一个  一一对应 保证每一个括号都有效
-        public static bool IsValid(string s)
+        public static string ReverseVowels(string s)
         {
-            int length = s.Length;
-            if (length == 0) return true;
-
-            Stack<char> sta1 = new Stack<char>();
             char[] nums = s.ToCharArray();
 
-            for (int i = 0; i < nums.Length; i++)
+            int i = 0;
+            int j = nums.Length - 1;
+
+            while (i < j)
             {
-                if (nums[i] == ']')
+                if (IsYuanYin(nums[i]) && IsYuanYin(nums[j]))
                 {
-                    //判断栈的数量是否大于0   为了防止 "}])"  一开始就是右括号的情况
-                    if (sta1.Count > 0 && sta1.Pop() == '[')
-                    {
-                        continue;
-                    }
-                    return false;
+                    char temp = nums[i];
+                    nums[i] = nums[j];
+                    nums[j] = temp;
+
                 }
-                else if (nums[i] == ')')
-                {
-                    if (sta1.Count > 0 && sta1.Pop() == '(')
-                    {
-                        continue;
-                    }
-                    return false;
-                }
-                else if (sta1.Count > 0 && nums[i] == '}')
-                {
-                    if (sta1.Pop() == '{')
-                    {
-                        continue;
-                    }
-                    return false;
-                }
-                else
-                {
-                    sta1.Push(nums[i]);
-                }
+                
             }
 
-            return sta1.Count == 0 ? true : false;
+            return new string(nums);
         }
+
+        public static bool IsYuanYin(char s)
+        {
+            if (s == 'a' || s == 'e' || s == 'i' || s == 'o' || s == 'u')
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
