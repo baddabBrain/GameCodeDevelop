@@ -17,29 +17,34 @@ namespace VisualStudioC____
             Console.ReadKey();
         }
 
-        public char PredictTheWinner(string s ,string t)
+        public int[] TopKFrequent(int[] nums, int k)
         {
-            Hashtable ha = new Hashtable();
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (!ha.Contains(s[i]))
-                {
-                    ha.Add(s[i], i);
-                }
-            }
+            Dictionary<int, int> dic = new Dictionary<int, int>();
+            int[] res = new int[k];
 
-            for (int i = 0; i < t.Length; i++)
+
+            //将所有元素出现的次数和具体的值存储到字典中
+            for (int i = 0; i < nums.Length; i++)
             {
-                if (ha.Contains(t[i]))
+                if (dic.ContainsKey(nums[i]))
                 {
-                    continue;
+                    dic[nums[i]]++;
                 }
                 else
                 {
-                    return t[i];
+                    dic.Add(nums[i], 1);
                 }
             }
-            return ' ';
+
+            //2.字典排序  输出前K个数
+
+            for (int j = 0; j < k; j++)
+            {
+                var maxKey = (from d in dic orderby d.Value descending select d.Key).First();
+                res[j] = maxKey;
+                dic.Remove(maxKey);
+            }
+            return res; 
         }
 
 
