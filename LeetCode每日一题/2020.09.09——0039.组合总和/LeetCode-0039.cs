@@ -1,37 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisualStudioC____
+namespace ConsoleApp1
 {
     class Program
     {
         static void Main(string[] args)
         {
-            int[] nums = new int[] {2,3,6,7};
-            int target = 7;
-            List<List<int>> res = new List<List<int>>();
 
-            res = CombinationSum(nums, target);
-            foreach (var item in res)
-            {
-                for (int i = 0; i < item.Count; i++)
-                {
-                    Console.WriteLine(item[i]);
-                }
-            }
-            
-            Console.ReadKey();
+
         }
+
 
         public static List<List<int>> CombinationSum(int[] candidates, int target)
         {
             List<List<int>> res = new List<List<int>>();
             Helper(candidates, target, res, new List<int>(), 0);
-            return res; 
+            return res;
 
         }
 
@@ -44,7 +32,7 @@ namespace VisualStudioC____
                 return;
             }
 
-            //相当于遍历N叉树的子节点
+            //相当于遍历N叉树的子节点    上一次递归使用过的数就不再使用了
             for (int i = start; i < candidates.Length; i++)
             {
                 //如果当前target 小于 减数   则相减的结果<0 不符合要求直接跳过
@@ -52,7 +40,7 @@ namespace VisualStudioC____
                 {
                     continue;
                 }
-                List<int> list = new List<int>(cur); 
+                List<int> list = new List<int>(cur);
                 //将符合要求的减数添加到子数组中
                 list.Add(candidates[i]);
                 Helper(candidates, target - candidates[i], res, list, i);
@@ -63,6 +51,4 @@ namespace VisualStudioC____
         }
 
 
-
     }
-}
