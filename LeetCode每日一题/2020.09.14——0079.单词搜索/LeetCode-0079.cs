@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisualStudioC____
+namespace ConsoleApp1
 {
     class Program
     {
@@ -13,8 +12,8 @@ namespace VisualStudioC____
         {
 
 
-            Console.ReadKey();
         }
+
 
         public bool Exist(char[][] board, String word)
         {
@@ -55,8 +54,6 @@ namespace VisualStudioC____
             board[i][j] = tmp;
             return res;
         }
-
-
 
 
 
