@@ -12,45 +12,29 @@ namespace VisualStudioC____
         static void Main(string[] args)
         {
 
-            string a = "longolongl";
-            string b = "gl";
-            StrStr(a, b);
+ 
+  
             Console.ReadKey();
         }
 
 
 
-        public static int StrStr(string haystack, string needle)
+        public int SumNumbers(TreeNode root)
         {
+            int res = 0;
+            if (root == null) return 0;
 
-            int longLength = haystack.Length;
-            int shortLength = needle.Length;
-
-            if (longLength < shortLength) return -1;
-
-            int i = 0;
-            int j = 0;
-            while (i < longLength && j < shortLength)
-            {
-                if (needle[j] == haystack[i])
-                {
-                    i++;
-                    j++;
-                }
-                else
-                {
-                    //不相等的话
-                    i = i++;
-                    j = 0;
-                }
-
-
-
-            }
-            if (j == shortLength) return i - shortLength;
-            else return -1;
-
+            return Helper(root, res);
         }
 
+
+    }
+
+     public class TreeNode
+    {
+      public int val;
+      public TreeNode left;
+      public TreeNode right;
+      public TreeNode(int x) { val = x; }
     }
 }
