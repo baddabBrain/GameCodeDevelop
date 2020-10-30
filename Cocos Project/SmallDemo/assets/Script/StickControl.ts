@@ -97,8 +97,7 @@ export default class StickControl extends cc.Component {
         //触摸点的世界坐标
         let touchPos: cc.Vec2 = this.node.convertToNodeSpaceAR(mousePos);
 
-        console.log("AAAAAAAAAAAA");
-        //监听事件绑定在主节点上  接受范围较大
+        //监听事件绑定在主节点上   监测范围较大
         if (this.touchType === StickType.Fixed) {
             //记录圆心位置
             this._stickPos = this.ringNode.getPosition();
