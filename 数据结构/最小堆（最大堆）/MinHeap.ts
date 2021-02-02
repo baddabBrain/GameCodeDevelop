@@ -1,16 +1,15 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
-
 /**
  * 最小堆
  */
+
+
+
+//1.如何实现泛型的最小堆 如果是泛型堆 —— 堆中的值（不一定是数值类型）如何进行比较
+//2.每次进行插入和删除的时间复杂度为O(logn)
+//  创建的时间复杂度为O(n)
 export default class MinHeap {
 
-    //存放元素的数组（以完全二叉树顺序存储的数组结构）
+    //存放元素的数组（以完全二叉树顺序存储的数组）
     private heap: Array<number>;
     //堆中存放的元素个数
     private count: number = 0;
@@ -24,20 +23,17 @@ export default class MinHeap {
                 this.count++;
                 this.siftUp();
             }
-
         } else {
             this.heap = new Array<number>();
             this.count = 0;
         }
-
     }
 
     /**
      * 获取堆中元素的个数
      */
-    public getHeapCount(): number {
+    public getLength(): number {
         return this.count;
-
     }
 
     public isEmpty(): boolean {
@@ -55,21 +51,8 @@ export default class MinHeap {
     }
 
     /**
-     * 获取堆中最小的元素（堆顶元素）
-     */
-    public getMinItem(): number {
-        if (this.isEmpty()) {
-            console.log("堆为空");
-            return;
-        }
-        else {
-            return this.heap[0];
-        }
-    }
-
-    /**
      * 删除最小的元素（堆顶元素）
-     * 删除的是堆顶元素，删除之前的元素是有序的，此时需要自上而下的调整
+     * 默认删除的是堆顶元素，删除之前的元素是有序的，此时需要自上而下的调整
      */
     public Pop(): void {
         if (this.count < 1) {
@@ -83,6 +66,7 @@ export default class MinHeap {
         this.siftDown();
     }
 
+    //返回堆顶元素
     public Peek(): number {
         return this.heap[0];
     }
@@ -92,7 +76,11 @@ export default class MinHeap {
      * 自底向上的调整
      */
     public siftUp(): void {
-        if (this.count < 2) { return; }
+        if (this.count < 2) {
+            console.log("堆中元素只有1个,不需要进行调整");
+            return;
+        }
+
         let curIndex: number = this.count - 1;
         let parentIndex: number = Math.floor((curIndex - 1) / 2);
         while (parentIndex >= 0) {
