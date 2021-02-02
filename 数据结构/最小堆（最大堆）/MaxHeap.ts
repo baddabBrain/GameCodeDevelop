@@ -1,13 +1,7 @@
 /**
- * 最小堆
+ * 最大堆
  */
-
-
-
-//1.如何实现泛型的最小堆 如果是泛型堆 —— 堆中的值（不一定是数值类型）如何进行比较
-//2.每次进行插入和删除的时间复杂度为O(logn)
-//  创建的时间复杂度为O(n)
-export default class MinHeap {
+export default class MaxHeap {
 
     //存放元素的数组（以完全二叉树顺序存储的数组）
     private heap: Array<number>;
@@ -51,7 +45,7 @@ export default class MinHeap {
     }
 
     /**
-     * 删除最小的元素（堆顶元素）
+     * 删除最大的元素（堆顶元素）
      * 默认删除的是堆顶元素，删除之前的元素是有序的，此时需要自上而下的调整
      */
     public Pop(): void {
@@ -77,17 +71,16 @@ export default class MinHeap {
      */
     public siftUp(): void {
         if (this.count < 2) {
-            //堆中只有一个元素，不需要调整
+            console.log("堆中元素只有1个,不需要进行调整");
             return;
         }
 
-        //从最后一位开始进行调整   
-        //每次都从最后一次进行调整？
         let curIndex: number = this.count - 1;
         let parentIndex: number = Math.floor((curIndex - 1) / 2);
         while (parentIndex >= 0) {
-            if (this.heap[curIndex] >= this.heap[parentIndex]) {
-                return;
+            //当前元素值小于父节点元素值
+            if (this.heap[curIndex] <= this.heap[parentIndex]) {
+                break;
             }
             let temp: number = this.heap[curIndex];
             this.heap[curIndex] = this.heap[parentIndex];
@@ -108,11 +101,11 @@ export default class MinHeap {
         //至少存在左子树
         while ((minIndex = Math.floor(curIndex * 2 + 1)) < this.count) {
             //存在右子树
-            if (this.heap[minIndex] > this.heap[minIndex + 1] && minIndex + 1 < this.count) {
-                //取左右子树中较小者
+            if (this.heap[minIndex] < this.heap[minIndex + 1] && minIndex + 1 < this.count) {
+                //取左右子树中较大者
                 minIndex++;
             }
-            if (this.heap[curIndex] <= this.heap[minIndex]) {
+            if (this.heap[curIndex] >= this.heap[minIndex]) {
                 //当前节点小于左右子树（不符合下沉条件）
                 break;
             }
