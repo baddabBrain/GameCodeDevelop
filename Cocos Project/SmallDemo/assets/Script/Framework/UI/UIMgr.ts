@@ -17,6 +17,9 @@ export enum eOrientation {
 }
 
 /** UI栈结构体 */
+// UIInfo  和  UIDataInfo 的区别
+// UIDataInfo:
+// UIInfo:
 export interface UIInfo {
     uiType: UIType;
     uiView: UIBase;
@@ -46,11 +49,9 @@ export default class UIMgr extends cc.Component {
     //Loading等待Icon
     @property(cc.Node)
     uiWaitNode: cc.Node = null;
-
     //Loading等待遮罩
     @property(cc.Node)
     waitMask: cc.Node = null;
- 
     //资源加载进度
     @property(cc.Node)
     sceneWaitNode: cc.Node = null;
@@ -68,7 +69,7 @@ export default class UIMgr extends cc.Component {
     /** Toast 提示 */
     private _tipComponnet: CommonToast = null;
     /** 保存窗口尺寸 */
-    private _winSize: cc.Size;
+    private _windowSize: cc.Size;
     /** 资源加载计数器，用于生成唯一的资源占用key */
     private useCount = 0;
     /** 背景UI（有若干层UI是作为背景UI，而不受切换等影响）*/
@@ -103,7 +104,7 @@ export default class UIMgr extends cc.Component {
 
     onLoad() {
         // 保存一份当前屏幕尺寸方便后面使用
-        this.resetWinSize();
+        this.resetWindowSize();
 
         // 单例初始化
         UIMgr._inst = this;
@@ -115,7 +116,7 @@ export default class UIMgr extends cc.Component {
      * @param uiArgs 
      * @param progressCallback 
      */
-    public open(uiType: UIType, uiArgs ?: any, progressCallback: ProcessCallback = null): void {
+    public open(uiType: UIType, uiArgs?: any, progressCallback: ProcessCallback = null): void {
 
         let uiInfo: UIInfo = {
             uiType: uiType,
@@ -227,8 +228,15 @@ export default class UIMgr extends cc.Component {
     }
 
 
-    resetWinSize() {
-        this._winSize = cc.view.getVisibleSize();
+    /**
+     * 获取当前屏幕尺寸
+     */
+    private resetWindowSize() {
+        this._windowSize = cc.view.getVisibleSize();
+    }
+
+    public get windowSize(): cc.Size {
+        return this._windowSize;
     }
 
     /**
@@ -261,11 +269,11 @@ export default class UIMgr extends cc.Component {
     }
 
     /**
-     * 添加到指定的层级
+     * 将节点添加到指定的层级
      * @param nLayerType 要添加到的层类型
      * @param node 被添加的节点
      */
-    public add2Layer(nLayerType: LayerType, node: cc.Node): void {
+    public addToLayer(nLayerType: LayerType, node: cc.Node): void {
         if (!node) {
             cc.error("node is not valid!", "%s");
             return;
@@ -317,13 +325,23 @@ export default class UIMgr extends cc.Component {
     }
 
 
-    public isTopUI(uiType : UIType): boolean {
+    /**
+     * 判断当前UI是否处于UI栈顶
+     * @param uiType 
+     * @returns 
+     */
+    public isTopUI(uiType: UIType): boolean {
         if (this.UIStack.length == 0) {
             return false;
         }
         return this.UIStack[this.UIStack.length - 1].uiType == uiType;
     }
 
+    /**
+     * 获取当前UI的UIBase组件
+     * @param uiType 
+     * @returns 
+     */
     public getUI(uiType: UIType): UIBase {
         for (let index = 0; index < this.UIStack.length; index++) {
             const element = this.UIStack[index];
@@ -334,10 +352,20 @@ export default class UIMgr extends cc.Component {
         return null;
     }
 
-    public isUIOpen(uiType: UIType) : boolean{
+    /**
+     * 判断当前UI是否打开
+     * 能获取到当前UI的UIBase组件说明当前UI处于打开状态
+     * @param uiType 
+     * @returns 
+     */
+    public isUIOpen(uiType: UIType): boolean {
         return this.getUI(uiType) != null;
     }
 
+    /**
+     * 获取UI栈顶打开的UI的UIBase组件
+     * @returns 
+     */
     public getTopUI(): UIBase {
         if (this.UIStack.length > 0) {
             return this.UIStack[this.UIStack.length].uiView;
@@ -407,31 +435,27 @@ export default class UIMgr extends cc.Component {
     }
 
 
-    public get winSize(): cc.Size {
-        return this._winSize;
-    }
-
     /**
     * 关闭当前界面
     * @param uiType 要关闭的界面
     */
-    public close(uiType : UIType) : void{
+    public close(uiType: UIType): void {
         let uiCount = this.UIStack.length;
         let uiInfo: UIInfo;
 
-        if(!(uiType > UIType.$Start && uiType < UIType.$End)){
+        if (!(uiType > UIType.$Start && uiType < UIType.$End)) {
             cc.error("unknown ui type to close!", "%s");
             return;
         }
-        
+
         // 插入待关闭队列
         if (uiCount < 1 || this.isClosing || this.isOpening) {
             this.UICloseQueue.push(uiType);
             return;
         }
-        
+
         for (let index = this.UIStack.length - 1; index >= 0; index--) {
-            let ui : UIInfo = this.UIStack[index];
+            let ui: UIInfo = this.UIStack[index];
             if (ui.uiType === uiType) {
                 uiInfo = ui;
                 this.UIStack.splice(index, 1);
@@ -443,7 +467,7 @@ export default class UIMgr extends cc.Component {
         if (uiInfo === undefined) {
             return;
         }
-      
+
 
         this.isClosing = true;
         // 关闭当前界面
@@ -458,17 +482,17 @@ export default class UIMgr extends cc.Component {
             uiInfo.preventNode = null;
         }
 
-        if (null == uiView) {
+        if (uiView == null) {
             this.isClosing = false;
             return;
         }
-    
+
 
         let preUIInfo = this.UIStack[uiCount - 2];
         // 处理显示模式
         this.updateUI();
-        let close = () => {
 
+        let close = () => {
             // 显示之前的界面
             if (preUIInfo && preUIInfo.uiView && this.isTopUI(preUIInfo.uiType)) {
                 // 如果之前的界面弹到了最上方（中间有肯能打开了其他界面）
@@ -499,14 +523,14 @@ export default class UIMgr extends cc.Component {
         }
 
         // 播放UI关闭动画，如果有得话
-        let closeAni : UICloseAnimation = uiView.node.getComponent(UICloseAnimation);
-        if(closeAni){
+        let closeAni: UICloseAnimation = uiView.node.getComponent(UICloseAnimation);
+        if (closeAni) {
             uiView.isPlayOpenAni = true;
-            let aniState : cc.AnimationState = closeAni.play();
-            if(aniState.wrapMode == cc.WrapMode.Loop){
+            let aniState: cc.AnimationState = closeAni.play();
+            if (aniState.wrapMode == cc.WrapMode.Loop) {
                 cc.error("UI close animation should be a loop animation!", "%s");
             }
-            closeAni.on("finished", ()=>{
+            closeAni.on("finished", () => {
                 close();
             }, this, false);
         } else {
@@ -536,7 +560,7 @@ export default class UIMgr extends cc.Component {
      * @param zOrder 屏蔽层的层级
      */
     private preventTouch(zOrder: number) {
-        let node : cc.Node = ResUtil.instantiate(this.uiBack);
+        let node: cc.Node = ResUtil.instantiate(this.uiBack);
         node.name = 'preventTouch';
         node.setContentSize(cc.winSize);
         node.on(cc.Node.EventType.TOUCH_START, function (event: cc.Event.EventCustom) {
@@ -661,7 +685,7 @@ export default class UIMgr extends cc.Component {
             }
 
             // 设置ui大小
-            let canvasSize : cc.Size = UIMgr.inst.getCanvasSize();
+            let canvasSize: cc.Size = UIMgr.inst.getCanvasSize();
             uiView.node.width = canvasSize.width;
             uiView.node.height = canvasSize.height;
 
@@ -675,7 +699,7 @@ export default class UIMgr extends cc.Component {
         }, useKey);
     }
 
-    public getCanvasSize() : cc.Size{
+    public getCanvasSize(): cc.Size {
         return new cc.Size(this.node.width, this.node.height);
     }
 
@@ -696,7 +720,7 @@ export default class UIMgr extends cc.Component {
         uiView.node.active = true;
         uiView.node.zIndex = uiInfo.zOrder || this.UIStack.length;
 
-        if(uiView.quickClose){
+        if (uiView.quickClose) {
             let backGround = uiView.node.getChildByName('background');
             if (!backGround) {
                 backGround = new cc.Node()
@@ -709,10 +733,10 @@ export default class UIMgr extends cc.Component {
                 event.stopPropagation();
                 this.close(nUIType);
             }, backGround);
-        } 
+        }
 
         // 添加到场景中
-        this.add2Layer(uiView.showLayer, uiView.node);
+        this.addToLayer(uiView.showLayer, uiView.node);
 
         // 刷新其他UI
         this.updateUI();
@@ -733,25 +757,25 @@ export default class UIMgr extends cc.Component {
 
 
         // 播放UI打开动画，如果有得话
-        let onAniOverFunc : Function = () =>{
+        let onAniOverFunc: Function = () => {
             uiView.isPlayOpenAni = false;
             uiView.onOpenAniOver();
             if (this.uiOpenDelegate) {
                 this.uiOpenDelegate(nUIType, fromUIID);
             }
-             
+
             // 通知UI打开事件
             EVENT.emit(EventId.ON_UI_OPEN, nUIType);
         }
 
-        let openAni : UIOpenAnimation = uiView.node.getComponent(UIOpenAnimation);
-        if(openAni){
+        let openAni: UIOpenAnimation = uiView.node.getComponent(UIOpenAnimation);
+        if (openAni) {
             uiView.isPlayOpenAni = true;
-            let aniState : cc.AnimationState = openAni.play();
-            if(aniState.wrapMode == cc.WrapMode.Loop){
+            let aniState: cc.AnimationState = openAni.play();
+            if (aniState.wrapMode == cc.WrapMode.Loop) {
                 cc.error("UI open animation should not be a loop animation!");
             }
-            openAni.once("finished", ()=>{
+            openAni.once("finished", () => {
                 onAniOverFunc();
             }, this);
         } else {

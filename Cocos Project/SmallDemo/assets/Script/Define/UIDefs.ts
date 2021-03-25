@@ -1,13 +1,3 @@
-
-
-/*
- * @Description: 
- * @Author: chenguanhui
- * @Date: 2019-08-13 13:54:36
- * @LastEditors: chenguanhui
- * @LastEditTime: 2019-08-23 10:17:48
- */
-
 /**
 * 层级管理
 */
@@ -76,6 +66,7 @@ export class UIDataInfo {
     /** 屏蔽点击 */
     public preventTouch: boolean = true;
 
+    /** 构造函数 */
     constructor(uiType: UIType, uiPath: string, ) {
         this.uiType = uiType;
         this.uiPath = uiPath;
@@ -103,6 +94,8 @@ export class UIDataInfo {
     }
 
     //  #region注册UI界面数据
+    //  定义一个UIDataInfo 数组
+    //  构造时传入UI类型和具体的UI路径
     private static _uiDataList: Array<UIDataInfo> = [
         new UIDataInfo(UIType.TestAccountLogin, "AccountLogin"),
         new UIDataInfo(UIType.Loading, "Loading"),
