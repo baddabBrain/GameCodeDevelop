@@ -29,4 +29,7 @@ export const EventId = {
 
     /** 更新loading tip */
     ON_UPDATE_LOADING_TTP: 'EventId.ON_UPDATE_LOADING_TTP',
+
+    /** 创建障碍物 */
+    ON_CREATE_BARRIER:'EventId.ON_CREATE_BARRIER'
 }

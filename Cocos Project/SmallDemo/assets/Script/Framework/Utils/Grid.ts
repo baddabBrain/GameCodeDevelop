@@ -53,7 +53,7 @@ export default class Grid {
      * @param orginPoint 整个二维数组的起点（世界坐标）
      * @param type 格子类型
      */
-    constructor(x: number, y: number, width: number, height: number, orginPoint: cc.Vec2, type?: GridType, cost = 1) {
+    constructor(x: number, y: number, width?: number, height?: number, orginPoint?: cc.Vec2, type?: GridType, cost = 1) {
         this.xIndex = x;
         this.yIndex = y;
         this.posX = x * width + orginPoint.x;
