@@ -221,7 +221,6 @@ export default class SearchControl {
         }
 
         let curGrid: Grid = this.grids[xIndex][yIndex];
-
         if (curGrid == null || curGrid.type == GridType.Barrier || this._closeList.indexOf(curGrid) != -1 || this._openList.indexOf(curGrid) != -1) {
             return;
         }
@@ -255,7 +254,6 @@ export default class SearchControl {
     //如果周围点没有合适的点，递归寻找直到找到合适的位置
     //当终点无效时能否直接使用closeList[length-1]的点？
     public searchVaildPoint(curGrid: Grid): Grid {
-
         let curX: number = curGrid.xIndex;
         let curY: number = curGrid.yIndex;
 
